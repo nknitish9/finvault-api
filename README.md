@@ -4,7 +4,7 @@ A production-ready Node.js backend for a finance dashboard system featuring soph
 
 ---
 
-## 🎯 Assignment Requirements Fulfillment
+## Assignment Requirements Fulfillment
 
 This project was built to satisfy and exceed all core requirements and evaluation criteria of the Finance Backend assignment.
 
@@ -19,7 +19,7 @@ This project was built to satisfy and exceed all core requirements and evaluatio
 5. **Validation and Error Handling**: Complete structural validation utilizing `express-validator` on all requests. Global centralized error handling wraps errors into custom `ApiError` instances providing clear JSON formats and correct HTTP Status codes (400, 401, 403, 404, 409, 429, 500).
 6. **Data Persistence**: Backed by `SQLite3` (via `better-sqlite3`) utilizing **Write-Ahead Logging (WAL)** for robust read/write concurrency without heavy dependency footprints.
 
-### 🌟 Implemented Optional Enhancements
+### Implemented Optional Enhancements
 - **Authentication**: JWT stateless authentication with `bcryptjs` password hashing.
 - **Pagination**: Implemented limit/page offsetting on list endpoints.
 - **Search Support**: Dynamic query parsing enabling string-searching over record descriptions.
@@ -30,13 +30,13 @@ This project was built to satisfy and exceed all core requirements and evaluatio
 
 ---
 
-## 🏗 Architectural Design
+## Architectural Design
 
 - **Layered Architecture**: Routes ➔ Middlewares (Auth, Validation) ➔ Controllers (inlined in routes for clarity) ➔ Services (Business Logic) ➔ Models (Data Access).
 - **Prepared Statements**: Raw SQL is used through `better-sqlite3`, rigorously locked down using parameterized bounds to prevent SQL injection constraints.
 - **Separation of Concerns**: Business logic completely decoupled from database mechanics; Controllers remain lightweight.
 
-## 🛠 Tech Stack
+## Tech Stack
 
 - **Runtime**: Node.js
 - **Framework**: Express.js
@@ -48,7 +48,7 @@ This project was built to satisfy and exceed all core requirements and evaluatio
 
 ---
 
-## 🚀 Installation & Setup
+## Installation & Setup
 
 1. **Clone the repository** (or download the files).
 2. **Install dependencies**:
@@ -81,7 +81,7 @@ This project was built to satisfy and exceed all core requirements and evaluatio
 
 ---
 
-## 📖 API Documentation (Swagger)
+## API Documentation (Swagger)
 
 Start the server and visit:
 ```
@@ -90,7 +90,51 @@ http://localhost:3000/api-docs
 You can use the interactive Swagger UI to explore routes, view schema payloads, and test the endpoints directly from your browser. 
 *(Remember to login to get a Bearer token and insert it into the "Authorize" padlock modal at the top right).*
 
-## 🧪 Testing
+---
+
+## API Endpoints Reference
+
+### Auth (`/api/auth`)
+| Method | Path | Access | Description |
+|---|---|---|---|
+| POST | `/register` | Public | Register a new user (default role: viewer) |
+| POST | `/login` | Public | Authenticate and receive JWT |
+| GET | `/profile` | Authenticated | Get current user profile |
+
+### User Management (`/api/users`)
+| Method | Path | Access | Description |
+|---|---|---|---|
+| GET | `/` | Admin | List all users (paginated) |
+| GET | `/:id` | Admin | Get user by ID |
+| PUT | `/:id/role` | Admin | Update user role |
+| PATCH | `/:id/status` | Admin | Activate/deactivate user |
+| DELETE | `/:id` | Admin | Delete user |
+
+### Financial Records (`/api/records`)
+| Method | Path | Access | Description |
+|---|---|---|---|
+| POST | `/` | Admin | Create a financial record |
+| GET | `/` | Viewer, Analyst, Admin | List records (filtered, paginated) |
+| GET | `/:id` | Viewer, Analyst, Admin | Get single record |
+| PUT | `/:id` | Admin | Update a record |
+| DELETE | `/:id` | Admin | Soft-delete a record |
+
+**Query Filters for GET `/api/records`:**
+- `type` — income / expense
+- `category` — e.g. salary, utilities, food
+- `startDate` / `endDate` — date range
+- `minAmount` / `maxAmount` — amount range
+- `page` / `limit` — pagination
+
+### Dashboard Analytics (`/api/dashboard`)
+| Method | Path | Access | Description |
+|---|---|---|---|
+| GET | `/summary` | Analyst, Admin | Total income, expenses, net balance |
+| GET | `/category-breakdown` | Analyst, Admin | Totals grouped by category |
+| GET | `/monthly-trends` | Analyst, Admin | Monthly income/expense trends |
+| GET | `/recent-activity` | Analyst, Admin | Last 10 records |
+
+## Testing
 
 Run the integration test suite:
 ```bash
